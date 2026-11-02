@@ -1,66 +1,154 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Қазақ тілі. Экология және табиғатты қорғау — электрондық оқу құралы
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Электронная версия учебного пособия А. Мухтановой «Қазақ тілі. Экология және табиғатты қорғау»
+для 1 курса ТиПО: 5 разделов, 20 уроков, интерактивные задания с автопроверкой, глоссарий,
+журнал успеваемости и кабинет преподавателя.
 
-## About Laravel
+## Возможности
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Пособие целиком**: разделы с обложками, уроки с целями, ожидаемыми результатами, методами,
+  грамматикой, опорными словами, текстами, таблицами и иллюстрациями из оригинала.
+- **Интерактивные задания**. Тест с выбором ответа, «дұрыс/бұрыс», пропуски в предложениях,
+  открытые вопросы, эссе с подсчётом слов, устные и проектные задания с отметкой о выполнении.
+  Где в пособии есть «Жауап кілті», ответ проверяется сразу: подсвечивается верно/неверно и
+  показывается правильный вариант.
+- **Шесть видов речевой деятельности** со значками оригинала: 📖 оқылым, 🎧 тыңдалым,
+  🗣️ айтылым, ✍️ жазылым, 📚 көркем шығарма, 🌿 жобалық жұмыс.
+- **Аудио для тыңдалым** загружает преподаватель в админке: в задании появляется плеер.
+- **Глоссарий** на 162 термина: список с переводом и определением плюс режим карточек.
+- **Поиск** по урокам, терминам и текстам пособия.
+- **Прогресс**: по каждому уроку — выполненные задания и баллы, полоса по разделу.
+- **Кабинет преподавателя**: очередь письменных работ на проверку с ключом перед глазами,
+  выставление балла и комментария, журнал группы по всем 20 урокам.
+- **Админка**: пользователи, группы, загрузка аудио, заполнение ключей к тестам.
+- **Два языка интерфейса** — казахский и русский, переключение в шапке. Контент пособия
+  остаётся на языке оригинала.
+- **Печать урока** в A4 без интерфейса. Светлая и тёмная темы, адаптив под телефон.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Стек
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Laravel 10 · Sanctum (токены) · MySQL 8 · Vue 3 · Vuetify 3 · Pinia · vue-router · Vite · PHPUnit.
+Тот же набор, что в соседнем проекте chickens.
 
-## Learning Laravel
+## Требования
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+PHP 8.1+ (`pdo_mysql`, `zip`, `gd`, `intl`), MySQL 8, Node 20, Composer.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Установка
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+npm run build
+php artisan serve
+```
 
-## Laravel Sponsors
+Учётные записи после сидирования (пароль у всех `password`):
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Роль | E-mail |
+|---|---|
+| Әкімші (админ) | admin@example.com |
+| Оқытушы (преподаватель) | teacher@example.com |
+| Студент | student@example.com |
 
-### Premium Partners
+### Импорт пособия из .docx
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Содержимое не вбивается руками — оно разбирается из исходного Word-файла:
 
-## Contributing
+```bash
+php artisan textbook:import "C:/path/Мухтанова_қазақ_тілі_Экология_бағыты.docx"
+php artisan db:seed --class=TextbookSeeder
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Команда раскладывает документ на разделы, уроки, блоки, задания, тесты, ключи и глоссарий,
+кладёт структуру в `database/seeders/data/textbook.json` и распаковывает иллюстрации в
+`public/textbook/`. JSON — источник правды: его можно править руками и пересеивать без
+изменения кода. Разбор живёт в `app/Services/Textbook/`.
 
-## Code of Conduct
+Что команда делает с оригиналом:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- нумерует уроки подряд, исправляя опечатку в заголовке первого урока («17-сабақ» → «1-сабақ»);
+- приводит заголовки, набранные капсом, к обычному виду;
+- определяет вид речевой деятельности по значку в начале задания;
+- разбирает тесты с вариантами «А) Ә) Б) В)», в том числе записанные одной строкой;
+- вытягивает ключи из разделов «Жауап кілті» и таблиц «Сұрақ | Жауап», включая шкалу оценивания;
+- отделяет ключи от заданий, чтобы ответы не попадали в формулировки.
 
-## Security Vulnerabilities
+## Развёртывание на сервере
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+curl -fsSL https://raw.githubusercontent.com/ramik1990/kazak-tili/main/deploy/server-setup.sh | bash
+```
 
-## License
+Или вручную: `docker compose up -d --build`. Поднимаются три контейнера — `app` (php-fpm),
+`web` (nginx) и `db` (mysql 8). Порт задаётся переменной `APP_PORT` (по умолчанию 8082).
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Код и собранный фронтенд лежат **внутри образа**, поэтому обновление — это всегда
+`git pull && docker compose up -d --build`, одного `git pull` недостаточно.
+
+Загруженные аудиофайлы хранятся в томе `storage` и переживают пересборку.
+
+## Тесты
+
+```bash
+php artisan test
+```
+
+Тесты идут на MySQL-базе `uchebnik_test` (создаётся заранее), настройка — в `phpunit.xml`.
+
+## API (v1)
+
+Все маршруты под `/api/v1`, авторизация `Authorization: Bearer <token>`.
+
+| Метод | Путь | Описание |
+|---|---|---|
+| POST | `/auth/register` | `name, email, password, password_confirmation, group_id` |
+| POST | `/auth/login` | `email, password` → `{token, user}` |
+| GET | `/auth/me` · POST `/auth/logout` · PUT `/auth/profile` | профиль |
+| GET | `/auth/groups` | список групп для формы регистрации |
+| GET | `/textbook` | разделы с уроками и прогрессом |
+| GET | `/sections/{id}` | раздел с уроками и итоговыми заданиями |
+| GET | `/lessons/{id}` | урок: блоки, задания, термины, мои ответы |
+| GET | `/glossary` | `?search=&lesson_id=` |
+| GET | `/search` | `?q=` — по урокам, терминам и текстам |
+| POST | `/tasks/{id}/answer` | `payload, status=draft\|submitted` → проверка и баллы |
+| GET | `/answers` | мои ответы |
+| GET | `/teacher/answers` | очередь на проверку (`?group_id=&lesson_id=`) |
+| PUT | `/teacher/answers/{id}` | `score, feedback` |
+| GET | `/teacher/groups` · `/teacher/journal?group_id=` | группы и журнал |
+| GET/PUT | `/admin/tasks`, `/admin/tasks/{id}` | задания, ключи к тестам |
+| POST/DELETE | `/admin/tasks/{id}/audio` | аудио для заданий тыңдалым |
+| CRUD | `/admin/users`, `/admin/groups` | пользователи и группы |
+
+Ошибки валидации — `422 {message, errors}`, отказ по роли — `403 {message, code}`.
+
+## Структура
+
+```
+app/
+  Console/Commands/TextbookImportCommand.php   импорт .docx
+  Services/Textbook/                           DocxDocument, TextbookParser
+  Services/AnswerChecker.php                   автопроверка заданий
+  Services/Progress.php                        пересчёт прогресса и оценка по шкале
+  Models/                                      Section, Lesson, LessonBlock, Task, Term,
+                                               Answer, LessonProgress, Group, User
+  Http/Controllers/Api/V1/                     Auth, Textbook, Answer, Teacher, Admin
+resources/js/
+  pages/                                       витрина, раздел, урок, глоссарий, прогресс,
+                                               кабинет преподавателя, админка
+  components/TaskCard.vue                      все типы интерактивных заданий
+  components/LessonBlock.vue                   текст, словарь, таблица, иллюстрация
+  i18n/messages.js                             казахский и русский интерфейс
+database/seeders/data/textbook.json            разобранное пособие
+public/textbook/                               иллюстрации из оригинала
+```
+
+## Что требует внимания преподавателя
+
+- **Аудио.** В оригинале звуковых файлов нет, часть заданий помечена «оқытушы мәтінді оқиды».
+  Пока файл не загружен, в задании выводится «Аудио әлі жүктелмеген».
+- **Ключи к итоговым тестам III и IV разделов.** В документе их нет — вопросы есть, ответы не
+  приведены. Такие тесты не проверяются автоматически, пока ключ не заполнен в админке.

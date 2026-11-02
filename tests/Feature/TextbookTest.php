@@ -53,10 +53,43 @@ class TextbookTest extends TestCase
         ], $attributes));
     }
 
-    public function test_guest_cannot_read_the_textbook(): void
+    public function test_guest_reads_the_textbook_without_signing_in(): void
     {
-        $this->getJson('/api/v1/textbook')->assertUnauthorized();
-        $this->getJson("/api/v1/lessons/{$this->lesson->id}")->assertUnauthorized();
+        $this->task();
+
+        $this->getJson('/api/v1/textbook')->assertOk()->assertJsonPath('data.0.roman', 'I');
+        $this->getJson("/api/v1/sections/{$this->lesson->section_id}")->assertOk();
+        $this->getJson('/api/v1/glossary')->assertOk()->assertJsonCount(1, 'data');
+        $this->getJson('/api/v1/search?q=мемлекеттік')->assertOk();
+
+        $this->getJson("/api/v1/lessons/{$this->lesson->id}")
+            ->assertOk()
+            ->assertJsonCount(1, 'data.tasks')
+            ->assertJsonPath('data.tasks.0.answer', null)
+            ->assertJsonPath('data.progress', null);
+    }
+
+    public function test_guest_cannot_answer_tasks(): void
+    {
+        $task = $this->task();
+
+        $this->postJson("/api/v1/tasks/{$task->id}/answer", ['payload' => ['text' => 'жауап']])->assertUnauthorized();
+        $this->getJson('/api/v1/answers')->assertUnauthorized();
+
+        $this->assertDatabaseCount('answers', 0);
+    }
+
+    public function test_signed_in_student_still_sees_own_answers_on_public_endpoints(): void
+    {
+        $task = $this->task();
+        Sanctum::actingAs($this->student);
+
+        $this->postJson("/api/v1/tasks/{$task->id}/answer", ['payload' => ['text' => 'жауап']])->assertOk();
+
+        $this->getJson("/api/v1/lessons/{$this->lesson->id}")
+            ->assertOk()
+            ->assertJsonPath('data.tasks.0.answer.status', 'submitted')
+            ->assertJsonPath('data.progress.done_tasks', 1);
     }
 
     public function test_student_sees_sections_with_lessons(): void

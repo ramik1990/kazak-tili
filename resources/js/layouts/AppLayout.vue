@@ -17,7 +17,7 @@ const links = computed(() => {
         { to: { name: 'glossary' }, title: t('nav.glossary'), icon: 'mdi-translate' },
     ];
 
-    if (!auth.isTeacher) {
+    if (auth.isAuthenticated && !auth.isTeacher) {
         items.push({ to: { name: 'progress' }, title: t('nav.progress'), icon: 'mdi-chart-donut' });
     }
 
@@ -82,7 +82,7 @@ if (stored) theme.global.name.value = stored;
 
         <v-btn :icon="isDark ? 'mdi-weather-sunny' : 'mdi-weather-night'" variant="text" @click="switchTheme" />
 
-        <v-menu>
+        <v-menu v-if="auth.isAuthenticated">
             <template #activator="{ props }">
                 <v-btn v-bind="props" variant="text" class="text-none" prepend-icon="mdi-account-circle-outline">
                     <span class="d-none d-sm-inline">{{ auth.user?.name }}</span>
@@ -94,6 +94,10 @@ if (stored) theme.global.name.value = stored;
                 <v-list-item prepend-icon="mdi-logout" :title="t('nav.logout')" @click="logout" />
             </v-list>
         </v-menu>
+
+        <v-btn v-else color="primary" variant="flat" class="ml-2" prepend-icon="mdi-login" :to="{ name: 'login' }">
+            {{ t('auth.signIn') }}
+        </v-btn>
     </v-app-bar>
 
     <v-navigation-drawer v-model="drawer" temporary class="no-print">

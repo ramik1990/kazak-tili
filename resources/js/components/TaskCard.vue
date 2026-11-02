@@ -2,6 +2,7 @@
 import { computed, reactive, ref } from 'vue';
 import { answersApi } from '@/api';
 import { parseError } from '@/api/http';
+import { useAuthStore } from '@/stores/auth';
 import { useUiStore } from '@/stores/ui';
 import { useI18n } from '@/composables/useI18n';
 import { countWords, splitBlanks } from '@/utils/format';
@@ -15,7 +16,10 @@ const props = defineProps({
 const emit = defineEmits(['saved']);
 
 const ui = useUiStore();
+const auth = useAuthStore();
 const { t } = useI18n();
+
+const locked = computed(() => !auth.isAuthenticated);
 
 const busy = ref(false);
 const revealed = ref(false);
@@ -144,7 +148,7 @@ function markDone() {
                     </div>
                     <v-radio-group
                         v-model="state.answers[question.number]"
-                        :disabled="readonly || checked"
+                        :disabled="readonly || checked || locked"
                         density="compact"
                         hide-details
                         class="mt-1"
@@ -167,7 +171,7 @@ function markDone() {
                     <span class="flex-grow-1">{{ index + 1 }}. {{ item }}</span>
                     <v-btn-toggle
                         v-model="state.values[index + 1]"
-                        :disabled="readonly || checked"
+                        :disabled="readonly || checked || locked"
                         density="comfortable"
                         variant="outlined"
                         divided
@@ -192,7 +196,7 @@ function markDone() {
                             <v-text-field
                                 v-if="p < splitBlanks(item).length - 1"
                                 v-model="state.values[blanks[index][p]]"
-                                :disabled="readonly || checked"
+                                :disabled="readonly || checked || locked"
                                 :error="verdict(blanks[index][p]) === false"
                                 density="compact"
                                 class="blank-input"
@@ -208,7 +212,7 @@ function markDone() {
             </template>
 
             <template v-else-if="task.type === 'mcq'">
-                <v-radio-group v-model="state.values[1]" :disabled="readonly || checked" density="compact" hide-details>
+                <v-radio-group v-model="state.values[1]" :disabled="readonly || checked || locked" density="compact" hide-details>
                     <v-radio
                         v-for="option in task.options"
                         :key="option.label"
@@ -233,7 +237,7 @@ function markDone() {
                 </ul>
                 <v-textarea
                     v-model="state.text"
-                    :disabled="readonly || checked"
+                    :disabled="readonly || checked || locked"
                     :rows="task.type === 'essay' ? 8 : 4"
                     auto-grow
                     :label="t('task.yourAnswer')"
@@ -262,7 +266,12 @@ function markDone() {
             </v-expand-transition>
         </v-card-text>
 
-        <v-card-actions v-if="!readonly" class="px-5 pb-4 pt-0 no-print">
+        <v-card-actions v-if="locked" class="px-5 pb-4 pt-0 no-print">
+            <v-icon icon="mdi-lock-outline" size="16" class="text-medium-emphasis mr-1" />
+            <RouterLink :to="{ name: 'login' }" class="text-caption">{{ t('task.signInToAnswer') }}</RouterLink>
+        </v-card-actions>
+
+        <v-card-actions v-else-if="!readonly" class="px-5 pb-4 pt-0 no-print">
             <v-btn
                 v-if="task.type === 'offline'"
                 :color="state.done ? 'success' : 'primary'"

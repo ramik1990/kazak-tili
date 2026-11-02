@@ -2,11 +2,13 @@
 import { computed, onMounted, ref } from 'vue';
 import { textbookApi } from '@/api';
 import { parseError } from '@/api/http';
+import { useAuthStore } from '@/stores/auth';
 import { useUiStore } from '@/stores/ui';
 import { useI18n } from '@/composables/useI18n';
 import { percent } from '@/utils/format';
 
 const ui = useUiStore();
+const auth = useAuthStore();
 const { t } = useI18n();
 
 const sections = ref([]);
@@ -68,7 +70,7 @@ onMounted(load);
                     <v-chip color="white" variant="flat" size="small" class="font-weight-bold text-primary">
                         {{ totals.lessons }} {{ t('lesson.lesson') }}
                     </v-chip>
-                    <div class="flex-grow-1" style="max-width: 320px">
+                    <div v-if="auth.isAuthenticated" class="flex-grow-1" style="max-width: 320px">
                         <v-progress-linear :model-value="totals.percent" color="white" bg-color="rgba(255,255,255,0.25)" height="8" rounded />
                         <div class="text-caption mt-1" style="opacity: 0.9">
                             {{ totals.done }} {{ t('common.of') }} {{ totals.lessons }}
@@ -145,7 +147,7 @@ onMounted(load);
                         <p class="text-body-2 text-medium-emphasis" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden">
                             {{ section.goal }}
                         </p>
-                        <div class="d-flex align-center ga-2 mt-3">
+                        <div v-if="auth.isAuthenticated" class="d-flex align-center ga-2 mt-3">
                             <v-progress-linear
                                 :model-value="percent(section.lessons.filter((l) => l.progress?.status === 'completed').length, section.lessons.length)"
                                 :color="section.accent"

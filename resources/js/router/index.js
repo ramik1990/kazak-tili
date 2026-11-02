@@ -6,10 +6,10 @@ const routes = [
     { path: '/register', name: 'register', component: () => import('@/pages/RegisterPage.vue'), meta: { guest: true } },
 
     { path: '/', redirect: { name: 'textbook' } },
-    { path: '/textbook', name: 'textbook', component: () => import('@/pages/TextbookPage.vue') },
-    { path: '/sections/:id(\\d+)', name: 'section', component: () => import('@/pages/SectionPage.vue'), props: true },
-    { path: '/lessons/:id(\\d+)', name: 'lesson', component: () => import('@/pages/LessonPage.vue'), props: true },
-    { path: '/glossary', name: 'glossary', component: () => import('@/pages/GlossaryPage.vue') },
+    { path: '/textbook', name: 'textbook', component: () => import('@/pages/TextbookPage.vue'), meta: { public: true } },
+    { path: '/sections/:id(\\d+)', name: 'section', component: () => import('@/pages/SectionPage.vue'), props: true, meta: { public: true } },
+    { path: '/lessons/:id(\\d+)', name: 'lesson', component: () => import('@/pages/LessonPage.vue'), props: true, meta: { public: true } },
+    { path: '/glossary', name: 'glossary', component: () => import('@/pages/GlossaryPage.vue'), meta: { public: true } },
     { path: '/progress', name: 'progress', component: () => import('@/pages/ProgressPage.vue') },
     { path: '/settings', name: 'settings', component: () => import('@/pages/SettingsPage.vue') },
 
@@ -32,7 +32,9 @@ router.beforeEach(async (to) => {
     const auth = useAuthStore();
 
     if (!auth.isAuthenticated) {
-        return to.meta.guest ? true : { name: 'login', query: to.fullPath !== '/' ? { redirect: to.fullPath } : {} };
+        if (to.meta.guest || to.meta.public) return true;
+
+        return { name: 'login', query: to.fullPath !== '/' ? { redirect: to.fullPath } : {} };
     }
 
     if (!auth.user) {

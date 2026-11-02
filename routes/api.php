@@ -21,13 +21,15 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-    Route::middleware(['auth:sanctum', 'role:any'])->group(function () {
+    Route::middleware('guest.auth')->group(function () {
         Route::get('textbook', [TextbookController::class, 'index']);
         Route::get('sections/{section}', [TextbookController::class, 'section'])->whereNumber('section');
         Route::get('lessons/{lesson}', [TextbookController::class, 'lesson'])->whereNumber('lesson');
         Route::get('glossary', [TextbookController::class, 'glossary']);
         Route::get('search', [TextbookController::class, 'search']);
+    });
 
+    Route::middleware(['auth:sanctum', 'role:any'])->group(function () {
         Route::get('answers', [AnswerController::class, 'index']);
         Route::post('tasks/{task}/answer', [AnswerController::class, 'store'])->whereNumber('task');
     });

@@ -2,6 +2,7 @@
 import { onMounted, ref, watch } from 'vue';
 import { textbookApi } from '@/api';
 import { parseError } from '@/api/http';
+import { useAuthStore } from '@/stores/auth';
 import { useUiStore } from '@/stores/ui';
 import { useI18n } from '@/composables/useI18n';
 import { percent } from '@/utils/format';
@@ -10,6 +11,7 @@ import TaskCard from '@/components/TaskCard.vue';
 const props = defineProps({ id: { type: String, required: true } });
 
 const ui = useUiStore();
+const auth = useAuthStore();
 const { t } = useI18n();
 const section = ref(null);
 
@@ -65,7 +67,7 @@ onMounted(load);
                                 {{ lesson.tasks_count }} {{ t('lesson.tasks').toLowerCase() }} · {{ lesson.terms_count }} {{ t('lesson.terms').toLowerCase() }}
                             </div>
                             <v-progress-linear
-                                v-if="lesson.progress"
+                                v-if="auth.isAuthenticated && lesson.progress"
                                 :model-value="percent(lesson.progress.done_tasks, lesson.progress.total_tasks)"
                                 :color="section.accent"
                                 height="5"

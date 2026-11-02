@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { textbookApi } from '@/api';
 import { parseError } from '@/api/http';
+import { useAuthStore } from '@/stores/auth';
 import { useUiStore } from '@/stores/ui';
 import { useI18n } from '@/composables/useI18n';
 import { percent } from '@/utils/format';
@@ -11,6 +12,7 @@ import TaskCard from '@/components/TaskCard.vue';
 const props = defineProps({ id: { type: String, required: true } });
 
 const ui = useUiStore();
+const auth = useAuthStore();
 const { t } = useI18n();
 const lesson = ref(null);
 const tab = ref('lesson');
@@ -69,6 +71,20 @@ onMounted(load);
             <v-spacer />
             <v-btn variant="tonal" prepend-icon="mdi-printer" @click="print">{{ t('lesson.print') }}</v-btn>
         </div>
+
+        <v-alert
+            v-if="!auth.isAuthenticated"
+            type="info"
+            variant="tonal"
+            icon="mdi-school-outline"
+            class="mb-5 no-print"
+        >
+            <div class="d-flex flex-wrap align-center ga-3">
+                <span class="flex-grow-1">{{ t('lesson.guestNotice') }}</span>
+                <v-btn color="primary" variant="flat" size="small" :to="{ name: 'login' }">{{ t('auth.signIn') }}</v-btn>
+                <v-btn variant="text" size="small" :to="{ name: 'register' }">{{ t('auth.signUp') }}</v-btn>
+            </div>
+        </v-alert>
 
         <div class="print-sheet">
             <div class="cover mb-6">

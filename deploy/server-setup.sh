@@ -29,7 +29,7 @@ if [ ! -f .env ]; then
     sed -i "s#^DB_HOST=.*#DB_HOST=db#; s#^DB_DATABASE=.*#DB_DATABASE=$DB_DATABASE#; s#^DB_USERNAME=.*#DB_USERNAME=$DB_USERNAME#; s#^DB_PASSWORD=.*#DB_PASSWORD=\"$DB_PASSWORD\"#" .env
 fi
 
-mkdir -p public/build public/textbook storage/app/public/audio
+mkdir -p public/build public/illustrations storage/app/public/audio
 
 if command -v ufw >/dev/null 2>&1 && ufw status | grep -q '^Status: active'; then
     ufw allow "$APP_PORT"/tcp >/dev/null

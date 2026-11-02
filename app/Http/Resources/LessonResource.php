@@ -20,7 +20,7 @@ class LessonResource extends JsonResource
             'grammar_topic' => $this->grammar_topic,
             'support_words' => $this->support_words ?? [],
             'scale' => $this->scale ?? [],
-            'cover' => $this->cover ? "/textbook/{$this->cover}" : null,
+            'cover' => $this->cover ? "/illustrations/{$this->cover}" : null,
             'section' => new SectionResource($this->whenLoaded('section')),
             'blocks' => LessonBlockResource::collection($this->whenLoaded('blocks')),
             'tasks' => TaskResource::collection($this->whenLoaded('tasks')),

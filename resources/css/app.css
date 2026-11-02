@@ -7,6 +7,13 @@
     --line: rgba(27, 94, 74, 0.16);
 }
 
+.v-theme--dark {
+    --leaf: #6FD3A8;
+    --leaf-soft: rgba(111, 211, 168, 0.16);
+    --sand: #E0A163;
+    --line: rgba(160, 220, 196, 0.22);
+}
+
 html,
 body {
     font-family: var(--font-ui);
@@ -21,6 +28,10 @@ body {
     background:
         radial-gradient(1200px 500px at 110% -10%, rgba(31, 122, 140, 0.10), transparent 60%),
         radial-gradient(900px 420px at -10% 0%, rgba(27, 94, 74, 0.10), transparent 60%);
+}
+
+.v-theme--dark .lesson-row:hover {
+    background: rgba(111, 211, 168, 0.08);
 }
 
 .page {
@@ -176,6 +187,7 @@ body {
 
 .doc-table thead th {
     background: var(--leaf-soft);
+    color: inherit;
     font-weight: 700;
 }
 

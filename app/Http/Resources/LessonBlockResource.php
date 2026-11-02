@@ -12,7 +12,7 @@ class LessonBlockResource extends JsonResource
         $payload = $this->payload ?? [];
 
         if (isset($payload['files'])) {
-            $payload['files'] = array_map(fn ($file) => "/textbook/{$file}", $payload['files']);
+            $payload['files'] = array_map(fn ($file) => "/illustrations/{$file}", $payload['files']);
         }
 
         return [

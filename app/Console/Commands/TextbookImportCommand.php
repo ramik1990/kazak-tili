@@ -11,7 +11,7 @@ class TextbookImportCommand extends Command
 {
     protected $signature = 'textbook:import {file : Путь к .docx}
         {--json=database/seeders/data/textbook.json : Куда сохранить структуру}
-        {--media=public/textbook : Куда распаковать иллюстрации}';
+        {--media=public/illustrations : Куда распаковать иллюстрации}';
 
     protected $description = 'Разбирает .docx пособия в структуру уроков, заданий и глоссария';
 

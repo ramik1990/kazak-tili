@@ -17,6 +17,7 @@ const light = {
         background: '#F6F4EC',
         surface: '#FFFFFF',
         'surface-variant': '#EDE7D8',
+        'on-surface-variant': '#17241F',
     },
 };
 
@@ -33,6 +34,7 @@ const dark = {
         background: '#12201C',
         surface: '#1A2B26',
         'surface-variant': '#243A33',
+        'on-surface-variant': '#E6F0EB',
     },
 };
 

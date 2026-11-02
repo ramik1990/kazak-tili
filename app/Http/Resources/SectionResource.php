@@ -19,7 +19,7 @@ class SectionResource extends JsonResource
             'objectives' => $this->objectives ?? [],
             'outcomes' => $this->outcomes ?? [],
             'methods' => $this->methods ?? [],
-            'cover' => $this->cover ? "/textbook/{$this->cover}" : null,
+            'cover' => $this->cover ? "/illustrations/{$this->cover}" : null,
             'accent' => $this->accent,
             'lessons' => LessonResource::collection($this->whenLoaded('lessons')),
             'tasks' => TaskResource::collection($this->whenLoaded('tasks')),

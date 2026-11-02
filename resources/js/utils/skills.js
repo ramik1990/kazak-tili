@@ -1,10 +1,10 @@
 export const SKILLS = {
     reading: { icon: '📖', color: '#1B5E4A', soft: '#E4F0E9' },
-    listening: { icon: '🎧', color: '#1F7A8C', soft: '#E1F1F4' },
+    listening: { icon: '🎧', color: '#196A79', soft: '#E1F1F4' },
     speaking: { icon: '🗣️', color: '#8A4B9B', soft: '#F2E8F6' },
-    writing: { icon: '✍️', color: '#C2721B', soft: '#FBEFE0' },
+    writing: { icon: '✍️', color: '#8F5311', soft: '#FBEFE0' },
     literature: { icon: '📚', color: '#9B4B4B', soft: '#F7E8E8' },
-    project: { icon: '🌿', color: '#4E7A2E', soft: '#EBF3E2' },
+    project: { icon: '🌿', color: '#3F6322', soft: '#EBF3E2' },
 };
 
 export const TASK_TYPES = {

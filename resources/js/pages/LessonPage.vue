@@ -82,7 +82,7 @@ onMounted(load);
             </div>
 
             <v-row class="mb-2">
-                <v-col cols="12" md="7">
+                <v-col cols="12" :md="lesson.grammar_topic || lesson.methods.length || progress ? 7 : 12">
                     <v-card class="pa-5 h-100" color="surface-variant">
                         <div class="text-overline">{{ t('lesson.goal') }}</div>
                         <p class="read text-body-2 mb-4">{{ lesson.goal }}</p>
@@ -95,7 +95,7 @@ onMounted(load);
                         </template>
                     </v-card>
                 </v-col>
-                <v-col cols="12" md="5">
+                <v-col v-if="lesson.grammar_topic || lesson.methods.length || progress" cols="12" md="5">
                     <v-card class="pa-5 h-100" border>
                         <div v-if="lesson.grammar_topic" class="mb-3">
                             <div class="text-overline">{{ t('lesson.grammar') }}</div>

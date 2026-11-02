@@ -65,7 +65,7 @@ php artisan db:seed --class=TextbookSeeder
 
 Команда раскладывает документ на разделы, уроки, блоки, задания, тесты, ключи и глоссарий,
 кладёт структуру в `database/seeders/data/textbook.json` и распаковывает иллюстрации в
-`public/textbook/`. JSON — источник правды: его можно править руками и пересеивать без
+`public/illustrations/`. JSON — источник правды: его можно править руками и пересеивать без
 изменения кода. Разбор живёт в `app/Services/Textbook/`.
 
 Что команда делает с оригиналом:
@@ -143,7 +143,7 @@ resources/js/
   components/LessonBlock.vue                   текст, словарь, таблица, иллюстрация
   i18n/messages.js                             казахский и русский интерфейс
 database/seeders/data/textbook.json            разобранное пособие
-public/textbook/                               иллюстрации из оригинала
+public/illustrations/                               иллюстрации из оригинала
 ```
 
 ## Что требует внимания преподавателя

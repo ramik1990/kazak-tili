@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\File;
 
 class TextbookSeeder extends Seeder
 {
-    private const ACCENTS = ['#2E7D5B', '#1F7A8C', '#C2721B', '#5B7C2E', '#6B4E9B'];
+    private const ACCENTS = ['#2E7D5B', '#1F7A8C', '#A35C12', '#4C6A24', '#6B4E9B'];
 
     public function run(): void
     {

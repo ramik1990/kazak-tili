@@ -330,6 +330,28 @@ h3 {
     font-weight: 800;
 }
 
+.hl {
+    padding: 0 4px;
+    border-radius: 6px;
+    font-weight: 800;
+    color: inherit;
+    background: var(--amber-soft);
+    box-shadow: inset 0 -2px 0 var(--amber);
+    cursor: help;
+}
+
+.hl--new {
+    background: var(--green-soft);
+    box-shadow: inset 0 -2px 0 var(--green);
+}
+
+.hl-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+}
+
 .blank-input {
     display: inline-block;
     min-width: 150px;
@@ -400,6 +422,11 @@ h3 {
 
     .poster {
         break-inside: avoid;
+        box-shadow: none !important;
+    }
+
+    .hl {
+        background: none !important;
         box-shadow: none !important;
     }
 

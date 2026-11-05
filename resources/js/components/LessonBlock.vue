@@ -1,7 +1,11 @@
 <script setup>
 import { computed } from 'vue';
+import HighlightedText from '@/components/HighlightedText.vue';
 
-const props = defineProps({ block: { type: Object, required: true } });
+const props = defineProps({
+    block: { type: Object, required: true },
+    terms: { type: Array, default: () => [] },
+});
 
 const rows = computed(() => props.block.payload?.rows ?? []);
 const words = computed(() => props.block.payload?.words ?? []);
@@ -17,7 +21,9 @@ const paragraphs = computed(() => props.block.paragraphs ?? []);
 
     <section v-else-if="block.type === 'text'" class="poster poster--amber">
         <span class="poster__badge"><span class="emoji">📖</span> Мәтін</span>
-        <p v-for="(line, i) in paragraphs" :key="i" class="read mb-3">{{ line }}</p>
+        <p v-for="(line, i) in paragraphs" :key="i" class="read mb-3">
+            <HighlightedText :text="line" :terms="terms" />
+        </p>
     </section>
 
     <section v-else-if="block.type === 'vocabulary'" class="poster poster--green">

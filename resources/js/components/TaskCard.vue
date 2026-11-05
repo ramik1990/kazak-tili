@@ -7,11 +7,13 @@ import { useUiStore } from '@/stores/ui';
 import { useI18n } from '@/composables/useI18n';
 import { countWords, splitBlanks } from '@/utils/format';
 import SkillBadge from '@/components/SkillBadge.vue';
+import HighlightedText from '@/components/HighlightedText.vue';
 import { iconOf, toneOf } from '@/utils/skills';
 
 const props = defineProps({
     task: { type: Object, required: true },
     readonly: { type: Boolean, default: false },
+    terms: { type: Array, default: () => [] },
 });
 
 const emit = defineEmits(['saved']);
@@ -171,7 +173,7 @@ function markDone() {
 
             <template v-else-if="task.type === 'true_false'">
                 <div v-for="(item, index) in textItems" :key="index" class="d-flex flex-wrap align-center ga-3 mb-3">
-                    <span class="flex-grow-1">{{ index + 1 }}. {{ item }}</span>
+                    <span class="flex-grow-1">{{ index + 1 }}. <HighlightedText :text="item" :terms="terms" /></span>
                     <v-btn-toggle
                         v-model="state.values[index + 1]"
                         :disabled="readonly || checked || locked"
@@ -227,7 +229,7 @@ function markDone() {
 
             <template v-else-if="task.type === 'offline'">
                 <ul v-if="textItems.length" class="read ml-5 mb-3">
-                    <li v-for="(item, index) in textItems" :key="index">{{ item }}</li>
+                    <li v-for="(item, index) in textItems" :key="index"><HighlightedText :text="item" :terms="terms" /></li>
                 </ul>
                 <v-alert type="info" variant="tonal" density="compact" icon="mdi-account-voice">
                     {{ t('task.offline') }}
@@ -236,7 +238,7 @@ function markDone() {
 
             <template v-else>
                 <ul v-if="textItems.length" class="read ml-5 mb-3">
-                    <li v-for="(item, index) in textItems" :key="index">{{ item }}</li>
+                    <li v-for="(item, index) in textItems" :key="index"><HighlightedText :text="item" :terms="terms" /></li>
                 </ul>
                 <v-textarea
                     v-model="state.text"

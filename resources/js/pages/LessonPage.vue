@@ -7,6 +7,7 @@ import { useUiStore } from '@/stores/ui';
 import { useI18n } from '@/composables/useI18n';
 import { percent } from '@/utils/format';
 import { TONES } from '@/utils/skills';
+import { collectTerms } from '@/utils/highlight';
 import LessonBlock from '@/components/LessonBlock.vue';
 import TaskCard from '@/components/TaskCard.vue';
 
@@ -20,6 +21,19 @@ const tab = ref('lesson');
 
 const tone = computed(() => TONES[((lesson.value?.section?.number ?? 1) - 1) % TONES.length]);
 const progress = computed(() => lesson.value?.progress);
+
+const terms = computed(() => {
+    if (!lesson.value) return [];
+
+    const words = lesson.value.blocks
+        .filter((block) => block.type === 'vocabulary')
+        .flatMap((block) => block.payload?.words ?? [])
+        .map((word) => ({ ...word, kind: 'new' }));
+
+    const support = (lesson.value.support_words ?? []).map((word) => ({ ...word, kind: 'support' }));
+
+    return collectTerms([...support, ...words]);
+});
 
 const stream = computed(() => {
     if (!lesson.value) return [];
@@ -148,6 +162,12 @@ onMounted(load);
 
             <section v-if="lesson.support_words.length" class="poster poster--green">
                 <span class="poster__badge"><span class="emoji">🔑</span> {{ t('lesson.supportWords') }}</span>
+                <div v-if="terms.length" class="d-flex flex-wrap align-center ga-3 mb-3 text-medium-emphasis">
+                    <span class="hl-legend">{{ t('lesson.legend') }}</span>
+                    <span class="hl-legend"><mark class="hl">{{ t('lesson.legendSupport') }}</mark></span>
+                    <span class="hl-legend"><mark class="hl hl--new">{{ t('lesson.legendNew') }}</mark></span>
+                    <span class="hl-legend text-caption">{{ t('lesson.legendHint') }}</span>
+                </div>
                 <table class="vocab-table">
                     <tbody>
                         <tr v-for="(word, i) in lesson.support_words" :key="i">
@@ -159,8 +179,8 @@ onMounted(load);
             </section>
 
             <template v-for="(entry, index) in stream" :key="index">
-                <LessonBlock v-if="entry.kind === 'block'" :block="entry.data" />
-                <TaskCard v-else :task="entry.data" @saved="onSaved" />
+                <LessonBlock v-if="entry.kind === 'block'" :block="entry.data" :terms="terms" />
+                <TaskCard v-else :task="entry.data" :terms="terms" @saved="onSaved" />
             </template>
 
             <section v-if="lesson.terms.length" class="poster poster--blue">

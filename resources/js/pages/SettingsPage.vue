@@ -47,7 +47,8 @@ async function save() {
     <div class="page-narrow mx-auto">
         <h1 class="display-title text-h5 mb-5">{{ t('nav.settings') }}</h1>
 
-        <v-card class="pa-6" border>
+        <section class="poster poster--blue">
+            <span class="poster__badge"><span class="emoji">⚙️</span> {{ t('nav.settings') }}</span>
             <v-form @submit.prevent="save">
                 <v-text-field v-model="form.name" :label="t('auth.name')" :error-messages="errors.name" class="mb-3" />
                 <v-text-field v-model="form.email" :label="t('auth.email')" type="email" :error-messages="errors.email" class="mb-3" />
@@ -58,13 +59,13 @@ async function save() {
                     class="mb-5"
                 />
 
-                <div class="text-overline mb-2">{{ t('auth.password') }}</div>
+                <div class="font-weight-bold mb-2">{{ t('auth.password') }}</div>
                 <v-text-field v-model="form.current_password" :label="t('auth.currentPassword')" type="password" :error-messages="errors.current_password" class="mb-3" />
                 <v-text-field v-model="form.password" :label="t('auth.password')" type="password" :error-messages="errors.password" class="mb-3" />
                 <v-text-field v-model="form.password_confirmation" :label="t('auth.passwordConfirm')" type="password" class="mb-5" />
 
                 <v-btn type="submit" color="primary" size="large" :loading="busy">{{ t('common.save') }}</v-btn>
             </v-form>
-        </v-card>
+        </section>
     </div>
 </template>

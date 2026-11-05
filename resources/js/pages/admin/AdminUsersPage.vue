@@ -77,10 +77,10 @@ async function saveUser() {
 }
 
 async function removeUser(user) {
-    const ok = await ui.confirm({ title: `${user.name} — жою?`, confirmText: 'Жою' });
+    const ok = await ui.confirm({ title: `${user.name} — ${t('admin.remove')}?`, confirmText: t('admin.remove') });
     if (!ok) return;
     await adminApi.removeUser(user.id);
-    ui.success('Жойылды.');
+    ui.success(t('admin.removed'));
     load();
 }
 
@@ -123,8 +123,8 @@ onMounted(() => {
             <h1 class="display-title text-h5">{{ t('nav.users') }}</h1>
             <v-spacer />
             <v-btn-toggle v-model="tab" mandatory density="comfortable" variant="outlined" divided rounded="lg">
-                <v-btn value="users" size="small">Пайдаланушылар</v-btn>
-                <v-btn value="groups" size="small">Топтар</v-btn>
+                <v-btn value="users" size="small">{{ t('admin.users') }}</v-btn>
+                <v-btn value="groups" size="small">{{ t('admin.groups') }}</v-btn>
             </v-btn-toggle>
         </div>
 
@@ -141,25 +141,26 @@ onMounted(() => {
                 <v-select
                     v-model="filters.role"
                     :items="roles"
-                    label="Рөлі"
+                    :label="t('admin.role')"
                     clearable
                     style="max-width: 200px"
                     @update:model-value="filters.page = 1; load()"
                 />
                 <v-spacer />
-                <v-btn color="primary" prepend-icon="mdi-account-plus" @click="openUser()">Қосу</v-btn>
+                <v-btn color="primary" prepend-icon="mdi-account-plus" @click="openUser()">{{ t('admin.add') }}</v-btn>
             </div>
 
             <v-skeleton-loader v-if="loading" type="table" />
 
-            <v-card v-else class="pa-2" border>
-                <v-table density="comfortable">
+            <section v-else class="poster poster--blue">
+                <span class="poster__badge"><span class="emoji">👥</span> {{ t('nav.users') }}</span>
+                <v-table density="comfortable" class="bg-transparent">
                     <thead>
                         <tr>
-                            <th>Аты</th>
+                            <th>{{ t('admin.name') }}</th>
                             <th>E-mail</th>
-                            <th>Рөлі</th>
-                            <th>Тобы</th>
+                            <th>{{ t('admin.role') }}</th>
+                            <th>{{ t('admin.group') }}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -176,7 +177,7 @@ onMounted(() => {
                         </tr>
                     </tbody>
                 </v-table>
-            </v-card>
+            </section>
 
             <div v-if="meta.last_page > 1" class="d-flex justify-center mt-4">
                 <v-pagination v-model="filters.page" :length="meta.last_page" :total-visible="7" @update:model-value="load" />
@@ -186,18 +187,19 @@ onMounted(() => {
         <template v-else>
             <div class="d-flex mb-4">
                 <v-spacer />
-                <v-btn color="primary" prepend-icon="mdi-plus" @click="openGroup()">Топ қосу</v-btn>
+                <v-btn color="primary" prepend-icon="mdi-plus" @click="openGroup()">{{ t('admin.addGroup') }}</v-btn>
             </div>
 
-            <v-card class="pa-2" border>
-                <v-table density="comfortable">
+            <section class="poster poster--green">
+                <span class="poster__badge"><span class="emoji">🎓</span> Топтар</span>
+                <v-table density="comfortable" class="bg-transparent">
                     <thead>
                         <tr>
-                            <th>Атауы</th>
-                            <th>Мамандығы</th>
-                            <th>Курс</th>
-                            <th>Оқытушы</th>
-                            <th class="text-end">Студент</th>
+                            <th>{{ t('admin.name') }}</th>
+                            <th>{{ t('admin.speciality') }}</th>
+                            <th>{{ t('admin.year') }}</th>
+                            <th>{{ t('admin.teacher') }}</th>
+                            <th class="text-end">{{ t('admin.students') }}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -214,16 +216,16 @@ onMounted(() => {
                         </tr>
                     </tbody>
                 </v-table>
-            </v-card>
+            </section>
         </template>
 
         <v-dialog v-model="dialog.open" max-width="520">
             <v-card class="pa-4" rounded="xl">
-                <v-card-title>{{ dialog.id ? 'Өзгерту' : 'Жаңа пайдаланушы' }}</v-card-title>
+                <v-card-title>{{ dialog.id ? t('admin.edit') : t('admin.newUser') }}</v-card-title>
                 <v-card-text>
                     <v-text-field v-model="dialog.model.name" :label="t('auth.name')" :error-messages="errors.name" class="mb-3" />
                     <v-text-field v-model="dialog.model.email" :label="t('auth.email')" :error-messages="errors.email" class="mb-3" />
-                    <v-select v-model="dialog.model.role" :items="roles" label="Рөлі" class="mb-3" />
+                    <v-select v-model="dialog.model.role" :items="roles" :label="t('admin.role')" class="mb-3" />
                     <v-select
                         v-model="dialog.model.group_id"
                         :items="groups"
@@ -238,11 +240,11 @@ onMounted(() => {
                         :label="t('auth.password')"
                         type="text"
                         :error-messages="errors.password"
-                        :hint="dialog.id ? 'Бос қалдырсаңыз — өзгермейді' : ''"
+                        :hint="dialog.id ? t('admin.keepPassword') : ''"
                         persistent-hint
                         class="mb-3"
                     />
-                    <v-switch v-model="dialog.model.is_active" color="primary" label="Белсенді" hide-details />
+                    <v-switch v-model="dialog.model.is_active" color="primary" :label="t('admin.active')" hide-details />
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
@@ -254,17 +256,17 @@ onMounted(() => {
 
         <v-dialog v-model="groupDialog.open" max-width="520">
             <v-card class="pa-4" rounded="xl">
-                <v-card-title>{{ groupDialog.id ? 'Топты өзгерту' : 'Жаңа топ' }}</v-card-title>
+                <v-card-title>{{ groupDialog.id ? t('admin.edit') : t('admin.newGroup') }}</v-card-title>
                 <v-card-text>
-                    <v-text-field v-model="groupDialog.model.name" label="Атауы" :error-messages="errors.name" class="mb-3" />
-                    <v-text-field v-model="groupDialog.model.speciality" label="Мамандығы" class="mb-3" />
-                    <v-text-field v-model.number="groupDialog.model.year" label="Курс" type="number" min="1" max="6" class="mb-3" />
+                    <v-text-field v-model="groupDialog.model.name" :label="t('admin.name')" :error-messages="errors.name" class="mb-3" />
+                    <v-text-field v-model="groupDialog.model.speciality" :label="t('admin.speciality')" class="mb-3" />
+                    <v-text-field v-model.number="groupDialog.model.year" :label="t('admin.year')" type="number" min="1" max="6" class="mb-3" />
                     <v-select
                         v-model="groupDialog.model.teacher_id"
                         :items="users.filter((user) => user.role !== 'student')"
                         item-title="name"
                         item-value="id"
-                        label="Оқытушы"
+                        :label="t('admin.teacher')"
                         clearable
                     />
                 </v-card-text>

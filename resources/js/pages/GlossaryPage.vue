@@ -37,11 +37,11 @@ onMounted(load);
     <div>
         <div class="d-flex flex-wrap align-center ga-3 mb-5">
             <h1 class="display-title text-h5">{{ t('nav.glossary') }}</h1>
-            <v-chip size="small" variant="tonal">{{ terms.length }}</v-chip>
+            <v-chip size="small" color="secondary" variant="flat">{{ terms.length }}</v-chip>
             <v-spacer />
-            <v-btn-toggle v-model="mode" mandatory density="comfortable" variant="outlined" divided rounded="lg">
-                <v-btn value="list" prepend-icon="mdi-format-list-bulleted" size="small">Тізім</v-btn>
-                <v-btn value="cards" prepend-icon="mdi-cards-outline" size="small">Карточка</v-btn>
+            <v-btn-toggle v-model="mode" mandatory density="comfortable" variant="outlined" divided rounded="pill">
+                <v-btn value="list" prepend-icon="mdi-format-list-bulleted" size="small">{{ t('glossary.list') }}</v-btn>
+                <v-btn value="cards" prepend-icon="mdi-cards-outline" size="small">{{ t('glossary.cards') }}</v-btn>
             </v-btn-toggle>
         </div>
 
@@ -49,31 +49,39 @@ onMounted(load);
 
         <v-skeleton-loader v-if="loading" type="table" />
 
-        <v-card v-else-if="mode === 'cards' && card" class="pa-10 text-center" border @click="flipped = !flipped">
-            <div class="text-overline mb-3">{{ cardIndex + 1 }} / {{ filtered.length }}</div>
-            <div class="display-title text-h4 mb-3">{{ flipped ? card.ru : card.kk }}</div>
-            <div v-if="flipped" class="text-body-2 text-medium-emphasis">{{ card.definition }}</div>
-            <div v-else class="text-caption text-medium-emphasis">Аударманы көру үшін басыңыз</div>
-            <v-btn class="mt-6" color="primary" variant="flat" @click.stop="next">Келесі</v-btn>
-        </v-card>
+        <section
+            v-else-if="mode === 'cards' && card"
+            class="poster poster--violet text-center"
+            style="cursor: pointer"
+            @click="flipped = !flipped"
+        >
+            <span class="poster__badge"><span class="emoji">🗂️</span> {{ cardIndex + 1 }} / {{ filtered.length }}</span>
+            <div class="display-title text-h4 my-6">{{ flipped ? card.ru : card.kk }}</div>
+            <div v-if="flipped && card.definition" class="read text-body-2 mb-4">{{ card.definition }}</div>
+            <div v-else-if="!flipped" class="text-caption text-medium-emphasis mb-4">{{ t('glossary.flip') }}</div>
+            <v-btn color="primary" variant="flat" @click.stop="next">{{ t('glossary.next') }}</v-btn>
+        </section>
 
-        <v-card v-else class="pa-2" border>
-            <v-table density="comfortable">
-                <thead>
-                    <tr>
-                        <th>Қазақша</th>
-                        <th>Орысша</th>
-                        <th>Анықтамасы</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="term in filtered" :key="term.id">
-                        <td class="font-weight-bold">{{ term.kk }}</td>
-                        <td>{{ term.ru }}</td>
-                        <td class="text-medium-emphasis">{{ term.definition }}</td>
-                    </tr>
-                </tbody>
-            </v-table>
-        </v-card>
+        <section v-else class="poster poster--green">
+            <span class="poster__badge"><span class="emoji">📚</span> {{ t('nav.glossary') }}</span>
+            <div style="overflow-x: auto">
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th>{{ t('glossary.kazakh') }}</th>
+                            <th>{{ t('glossary.russian') }}</th>
+                            <th>{{ t('glossary.definition') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="term in filtered" :key="term.id">
+                            <td class="font-weight-bold">{{ term.kk }}</td>
+                            <td>{{ term.ru }}</td>
+                            <td class="text-medium-emphasis">{{ term.definition }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
     </div>
 </template>

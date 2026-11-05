@@ -67,22 +67,23 @@ onMounted(async () => {
 
         <v-skeleton-loader v-if="loading" type="article@3" />
 
-        <v-card v-else-if="!answers.length" class="pa-10 text-center" border>
+        <section v-else-if="!answers.length" class="poster poster--green pa-10 text-center">
+            <span class="poster__badge"><span class="emoji">✅</span> {{ t('nav.review') }}</span>
             <v-icon icon="mdi-check-all" size="48" class="text-medium-emphasis mb-2" />
             <div class="text-medium-emphasis">{{ t('common.empty') }}</div>
-        </v-card>
+        </section>
 
-        <v-card v-for="answer in answers" :key="answer.id" class="pa-5 mb-4" border>
+        <section v-for="answer in answers" :key="answer.id" class="poster poster--amber">
+            <span class="poster__badge"><span class="emoji">✍️</span> {{ answer.task?.number }}-тапсырма</span>
             <div class="d-flex flex-wrap align-center ga-2 mb-2">
                 <v-chip size="small" variant="flat" color="primary">{{ answer.user?.name }}</v-chip>
                 <SkillBadge v-if="answer.task?.skill" :skill="answer.task.skill" />
-                <span class="text-caption text-medium-emphasis">{{ answer.task?.number }}-тапсырма</span>
             </div>
 
             <div class="text-body-2 font-weight-medium mb-2">{{ answer.task?.prompt }}</div>
 
-            <v-card class="pa-4 mb-3" color="surface-variant">
-                <div class="text-overline mb-1">{{ t('task.yourAnswer') }}</div>
+            <v-card class="pa-4 mb-3" color="surface-variant" rounded="lg">
+                <div class="font-weight-bold mb-1">{{ t('task.yourAnswer') }}</div>
                 <div v-if="answer.payload?.input?.text" class="read text-body-2">{{ answer.payload.input.text }}</div>
                 <pre v-else class="text-body-2" style="white-space: pre-wrap">{{ JSON.stringify(answer.payload?.input, null, 2) }}</pre>
             </v-card>
@@ -96,12 +97,12 @@ onMounted(async () => {
                     <v-text-field v-model.number="drafts[answer.id].score" type="number" min="0" :label="t('task.score')" />
                 </v-col>
                 <v-col cols="12" sm="7">
-                    <v-text-field v-model="drafts[answer.id].feedback" label="Пікір" />
+                    <v-text-field v-model="drafts[answer.id].feedback" :label="t('admin.comment')" />
                 </v-col>
                 <v-col cols="12" sm="2">
                     <v-btn color="primary" variant="flat" block @click="check(answer)">{{ t('task.check') }}</v-btn>
                 </v-col>
             </v-row>
-        </v-card>
+        </section>
     </div>
 </template>

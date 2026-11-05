@@ -48,7 +48,7 @@ async function upload(task, event) {
     try {
         const { data } = await adminApi.uploadAudio(task.id, file);
         task.audio = data.data.audio;
-        ui.success('Аудио жүктелді.');
+        ui.success(t('admin.audioUploaded'));
     } catch (error) {
         ui.error(parseError(error).message);
     } finally {
@@ -59,7 +59,7 @@ async function upload(task, event) {
 async function removeAudio(task) {
     await adminApi.deleteAudio(task.id);
     task.audio = null;
-    ui.success('Аудио жойылды.');
+    ui.success(t('admin.audioRemoved'));
 }
 
 function openKey(task) {
@@ -101,22 +101,23 @@ onMounted(load);
                 color="primary"
                 hide-details
                 density="compact"
-                label="Аудиосыз"
+                :label="t('admin.withoutAudio')"
                 @update:model-value="reload"
             />
         </div>
 
         <v-skeleton-loader v-if="loading" type="table" />
 
-        <v-card v-else class="pa-2" border>
-            <v-table density="comfortable">
+        <section v-else class="poster poster--violet">
+            <span class="poster__badge"><span class="emoji">🧩</span> {{ t('nav.tasks') }}</span>
+            <v-table density="comfortable" class="bg-transparent">
                 <thead>
                     <tr>
-                        <th style="width: 90px">Сабақ</th>
+                        <th style="width: 90px">{{ t('admin.lesson') }}</th>
                         <th style="width: 70px">№</th>
-                        <th>Тапсырма</th>
-                        <th style="width: 140px">Түрі</th>
-                        <th style="width: 280px">Аудио / кілт</th>
+                        <th>{{ t('admin.task') }}</th>
+                        <th style="width: 140px">{{ t('admin.type') }}</th>
+                        <th style="width: 280px">{{ t('admin.audio') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -135,7 +136,7 @@ onMounted(load);
                                 <label v-else>
                                     <input type="file" accept="audio/*" hidden @change="(event) => upload(task, event)">
                                     <v-btn size="small" variant="tonal" prepend-icon="mdi-upload" :loading="uploading === task.id" tag="span">
-                                        Аудио
+                                        {{ t('admin.audio') }}
                                     </v-btn>
                                 </label>
                             </div>
@@ -147,13 +148,13 @@ onMounted(load);
                                 :color="task.has_key ? 'success' : 'warning'"
                                 @click="openKey(task)"
                             >
-                                {{ task.has_key ? 'Кілт бар' : 'Кілт жоқ' }}
+                                {{ task.has_key ? t('admin.keyPresent') : t('admin.keyMissing') }}
                             </v-btn>
                         </td>
                     </tr>
                 </tbody>
             </v-table>
-        </v-card>
+        </section>
 
         <div v-if="meta.last_page > 1" class="d-flex justify-center mt-4">
             <v-pagination v-model="filters.page" :length="meta.last_page" :total-visible="7" @update:model-value="load" />
@@ -161,7 +162,7 @@ onMounted(load);
 
         <v-dialog v-model="keyDialog.open" max-width="560">
             <v-card v-if="keyDialog.task" class="pa-4" rounded="xl">
-                <v-card-title>Тест жауаптары</v-card-title>
+                <v-card-title>{{ t('admin.testAnswers') }}</v-card-title>
                 <v-card-text style="max-height: 60vh; overflow-y: auto">
                     <div v-for="question in keyDialog.task.questions" :key="question.number" class="mb-4">
                         <div class="text-body-2 mb-1">{{ question.number }}. {{ question.text }}</div>

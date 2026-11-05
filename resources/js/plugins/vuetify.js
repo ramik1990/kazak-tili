@@ -7,12 +7,12 @@ import * as directives from 'vuetify/directives';
 const light = {
     dark: false,
     colors: {
-        primary: '#1E8A4F',
-        secondary: '#1C7FB8',
-        accent: '#B0730C',
-        success: '#1E8A4F',
-        error: '#C33B3B',
-        warning: '#B0730C',
+        primary: '#1A7A46',
+        secondary: '#166A9B',
+        accent: '#905D09',
+        success: '#1A7A46',
+        error: '#B82F2F',
+        warning: '#905D09',
         info: '#166A9B',
         background: '#EEF7FD',
         surface: '#FFFFFF',

@@ -53,7 +53,8 @@ async function submit() {
                     <h1 class="display-title text-h5">{{ t('auth.signUp') }}</h1>
                 </div>
 
-                <v-card class="pa-6" border>
+                <section class="poster poster--green">
+                    <span class="poster__badge"><span class="emoji">🎓</span> {{ t('auth.signUp') }}</span>
                     <v-form @submit.prevent="submit">
                         <v-alert v-if="message" type="error" variant="tonal" density="compact" class="mb-4">{{ message }}</v-alert>
 
@@ -78,7 +79,7 @@ async function submit() {
                         {{ t('auth.hasAccount') }}
                         <RouterLink :to="{ name: 'login' }" class="font-weight-bold">{{ t('auth.signIn') }}</RouterLink>
                     </div>
-                </v-card>
+                </section>
 
                 <div class="text-center mt-4">
                     <v-btn variant="text" size="small" @click="toggle">

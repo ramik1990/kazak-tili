@@ -30,29 +30,30 @@ onMounted(async () => {
 
         <v-row class="mb-2">
             <v-col cols="12" sm="4">
-                <v-card class="pa-5 text-center" color="surface-variant">
-                    <div class="text-h3 font-weight-bold">{{ totals.percent }}%</div>
-                    <div class="text-caption text-medium-emphasis">орындалды</div>
-                </v-card>
+                <section class="poster poster--green text-center h-100">
+                    <span class="poster__badge"><span class="emoji">🏁</span> Орындалды</span>
+                    <div class="display-title text-h3">{{ totals.percent }}%</div>
+                </section>
             </v-col>
             <v-col cols="6" sm="4">
-                <v-card class="pa-5 text-center" border>
-                    <div class="text-h4 font-weight-bold">{{ totals.done }}</div>
-                    <div class="text-caption text-medium-emphasis">{{ t('lesson.tasks') }}</div>
-                </v-card>
+                <section class="poster poster--blue text-center h-100">
+                    <span class="poster__badge"><span class="emoji">📝</span> {{ t('lesson.tasks') }}</span>
+                    <div class="display-title text-h3">{{ totals.done }}</div>
+                </section>
             </v-col>
             <v-col cols="6" sm="4">
-                <v-card class="pa-5 text-center" border>
-                    <div class="text-h4 font-weight-bold">{{ totals.score }}<span class="text-h6 text-medium-emphasis">/{{ totals.max }}</span></div>
-                    <div class="text-caption text-medium-emphasis">{{ t('task.score') }}</div>
-                </v-card>
+                <section class="poster poster--amber text-center h-100">
+                    <span class="poster__badge"><span class="emoji">⭐</span> {{ t('task.score') }}</span>
+                    <div class="display-title text-h3">{{ totals.score }}<span class="text-h6 text-medium-emphasis">/{{ totals.max }}</span></div>
+                </section>
             </v-col>
         </v-row>
 
         <v-skeleton-loader v-if="loading" type="table" />
 
-        <v-card v-else class="pa-2" border>
-            <v-table density="comfortable">
+        <section v-else class="poster poster--violet">
+            <span class="poster__badge"><span class="emoji">📊</span> {{ t('nav.progress') }}</span>
+            <v-table density="comfortable" class="bg-transparent">
                 <thead>
                     <tr>
                         <th>№</th>
@@ -73,14 +74,14 @@ onMounted(async () => {
                         <td>
                             <v-progress-linear
                                 :model-value="percent(lesson.progress?.done_tasks ?? 0, lesson.progress?.total_tasks ?? lesson.tasks_count)"
-                                :color="lesson.accent"
-                                height="6"
+                                color="success"
+                                height="8"
                                 rounded
                             />
                         </td>
                     </tr>
                 </tbody>
             </v-table>
-        </v-card>
+        </section>
     </div>
 </template>

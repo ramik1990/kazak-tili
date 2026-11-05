@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/auth';
 import { useUiStore } from '@/stores/ui';
 import { useI18n } from '@/composables/useI18n';
 import { percent } from '@/utils/format';
+import { TONES } from '@/utils/skills';
 import LessonBlock from '@/components/LessonBlock.vue';
 import TaskCard from '@/components/TaskCard.vue';
 
@@ -17,7 +18,7 @@ const { t } = useI18n();
 const lesson = ref(null);
 const tab = ref('lesson');
 
-const accent = computed(() => lesson.value?.section?.accent || '#1B5E4A');
+const tone = computed(() => TONES[((lesson.value?.section?.number ?? 1) - 1) % TONES.length]);
 const progress = computed(() => lesson.value?.progress);
 
 const stream = computed(() => {
@@ -28,9 +29,25 @@ const stream = computed(() => {
     const merged = [
         ...blocks.map((block) => ({ kind: 'block', position: block.position, data: block })),
         ...tasks.map((task) => ({ kind: 'task', position: task.position, data: task })),
-    ];
+    ].sort((a, b) => a.position - b.position);
 
-    return merged.sort((a, b) => a.position - b.position);
+    const out = [];
+
+    for (const entry of merged) {
+        const last = out[out.length - 1];
+        const isText = entry.kind === 'block' && entry.data.type === 'text';
+
+        if (isText && last?.kind === 'block' && last.data.type === 'text') {
+            last.data.paragraphs.push(entry.data.text);
+            continue;
+        }
+
+        out.push(isText
+            ? { kind: 'block', position: entry.position, data: { type: 'text', paragraphs: [entry.data.text] } }
+            : entry);
+    }
+
+    return out;
 });
 
 async function load() {
@@ -87,87 +104,79 @@ onMounted(load);
         </v-alert>
 
         <div class="print-sheet">
-            <div class="cover mb-6">
+            <div :class="['lesson-hero', 'mb-5', `poster--${tone}`]">
                 <img v-if="lesson.cover || lesson.section.cover" :src="lesson.cover || lesson.section.cover" alt="">
-                <div class="cover__body">
-                    <div class="text-caption text-uppercase" style="letter-spacing: 0.18em; opacity: 0.85">
-                        {{ lesson.section.roman }} {{ t('lesson.section') }}
-                    </div>
-                    <h1 class="display-title text-h5 text-md-h4 mt-1">{{ lesson.number }}-сабақ. {{ lesson.title }}</h1>
+                <div class="lesson-hero__body">
+                    <span class="ribbon">{{ lesson.section.roman }} {{ t('lesson.section') }}</span>
+                    <h1 class="display-title text-h5 text-md-h4 mt-2">{{ lesson.number }}-сабақ. {{ lesson.title }}</h1>
                 </div>
             </div>
 
-            <v-row class="mb-2">
-                <v-col cols="12" :md="lesson.grammar_topic || lesson.methods.length || progress ? 7 : 12">
-                    <v-card class="pa-5 h-100" color="surface-variant">
-                        <div class="text-overline">{{ t('lesson.goal') }}</div>
-                        <p class="read text-body-2 mb-4">{{ lesson.goal }}</p>
+            <section class="poster poster--violet">
+                <span class="poster__badge"><span class="emoji">🎯</span> {{ t('lesson.goal') }}</span>
+                <p class="read mb-4">{{ lesson.goal }}</p>
 
-                        <template v-if="lesson.outcomes.length">
-                            <div class="text-overline">{{ t('lesson.outcomes') }}</div>
-                            <ul class="ml-4 text-body-2">
-                                <li v-for="(item, i) in lesson.outcomes" :key="i">{{ item }}</li>
-                            </ul>
-                        </template>
-                    </v-card>
-                </v-col>
-                <v-col v-if="lesson.grammar_topic || lesson.methods.length || progress" cols="12" md="5">
-                    <v-card class="pa-5 h-100" border>
-                        <div v-if="lesson.grammar_topic" class="mb-3">
-                            <div class="text-overline">{{ t('lesson.grammar') }}</div>
-                            <div class="text-body-2 font-weight-medium">{{ lesson.grammar_topic }}</div>
-                        </div>
-                        <div v-if="lesson.methods.length" class="mb-3">
-                            <div class="text-overline">{{ t('lesson.methods') }}</div>
-                            <v-chip v-for="(m, i) in lesson.methods" :key="i" size="x-small" variant="tonal" class="mr-1 mb-1">{{ m }}</v-chip>
-                        </div>
-                        <div v-if="progress" class="no-print">
-                            <div class="text-overline">{{ t('nav.progress') }}</div>
-                            <v-progress-linear
-                                :model-value="percent(progress.done_tasks, progress.total_tasks)"
-                                :color="accent"
-                                height="8"
-                                rounded
-                            />
-                            <div class="text-caption text-medium-emphasis mt-1">
-                                {{ progress.done_tasks }} {{ t('common.of') }} {{ progress.total_tasks }}
-                            </div>
-                        </div>
-                    </v-card>
-                </v-col>
-            </v-row>
+                <template v-if="lesson.outcomes.length">
+                    <div class="font-weight-bold mb-1">{{ t('lesson.outcomes') }}</div>
+                    <ol class="num-list">
+                        <li v-for="(item, i) in lesson.outcomes" :key="i">{{ item }}</li>
+                    </ol>
+                </template>
+            </section>
 
-            <v-card v-if="lesson.support_words.length" class="pa-5 my-5" border>
-                <div class="text-overline mb-2">{{ t('lesson.supportWords') }}</div>
-                <v-chip v-for="(word, i) in lesson.support_words" :key="i" class="mr-1 mb-1" variant="tonal" size="small">
-                    {{ word.kk }} — {{ word.ru }}
-                </v-chip>
-            </v-card>
+            <section v-if="lesson.grammar_topic || lesson.methods.length || progress" class="poster poster--pink">
+                <span class="poster__badge"><span class="emoji">🧩</span> {{ t('lesson.grammar') }}</span>
+
+                <div v-if="lesson.grammar_topic" class="text-body-1 font-weight-bold mb-3">{{ lesson.grammar_topic }}</div>
+
+                <div v-if="lesson.methods.length" class="mb-3">
+                    <v-chip v-for="(m, i) in lesson.methods" :key="i" size="small" variant="tonal" class="mr-1 mb-1">{{ m }}</v-chip>
+                </div>
+
+                <div v-if="progress" class="no-print">
+                    <v-progress-linear
+                        :model-value="percent(progress.done_tasks, progress.total_tasks)"
+                        color="success"
+                        height="10"
+                        rounded
+                    />
+                    <div class="text-caption text-medium-emphasis mt-1">
+                        {{ progress.done_tasks }} {{ t('common.of') }} {{ progress.total_tasks }}
+                    </div>
+                </div>
+            </section>
+
+            <section v-if="lesson.support_words.length" class="poster poster--green">
+                <span class="poster__badge"><span class="emoji">🔑</span> {{ t('lesson.supportWords') }}</span>
+                <table class="vocab-table">
+                    <tbody>
+                        <tr v-for="(word, i) in lesson.support_words" :key="i">
+                            <td>{{ word.kk }}</td>
+                            <td>{{ word.ru }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
 
             <template v-for="(entry, index) in stream" :key="index">
                 <LessonBlock v-if="entry.kind === 'block'" :block="entry.data" />
                 <TaskCard v-else :task="entry.data" @saved="onSaved" />
             </template>
 
-            <template v-if="lesson.terms.length">
-                <div class="d-flex align-center ga-3 mt-8 mb-4">
-                    <h2 class="text-h6 font-weight-bold">{{ t('lesson.terms') }}</h2>
-                    <div class="leaf-divider flex-grow-1" />
-                </div>
-                <v-card class="pa-4" border>
-                    <table class="vocab-table">
-                        <tbody>
-                            <tr v-for="term in lesson.terms" :key="term.id">
-                                <td>{{ term.kk }}</td>
-                                <td>
-                                    <div>{{ term.ru }}</div>
-                                    <div class="text-caption text-medium-emphasis">{{ term.definition }}</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </v-card>
-            </template>
+            <section v-if="lesson.terms.length" class="poster poster--blue">
+                <span class="poster__badge"><span class="emoji">📚</span> {{ t('lesson.terms') }}</span>
+                <table class="vocab-table">
+                    <tbody>
+                        <tr v-for="term in lesson.terms" :key="term.id">
+                            <td>{{ term.kk }}</td>
+                            <td>
+                                <div>{{ term.ru }}</div>
+                                <div class="text-caption text-medium-emphasis">{{ term.definition }}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
         </div>
     </div>
 </template>

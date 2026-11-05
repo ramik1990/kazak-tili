@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/auth';
 import { useUiStore } from '@/stores/ui';
 import { useI18n } from '@/composables/useI18n';
 import { percent } from '@/utils/format';
+import { TONES } from '@/utils/skills';
 
 const ui = useUiStore();
 const auth = useAuthStore();
@@ -54,13 +55,11 @@ onMounted(load);
 
 <template>
     <div>
-        <div class="cover mb-8">
+        <div class="lesson-hero poster--blue mb-8">
             <img v-if="hero" :src="hero" alt="">
-            <div class="cover__body">
-                <div class="text-caption text-uppercase" style="letter-spacing: 0.18em; opacity: 0.85">
-                    А. Мухтанова · оқу құралы
-                </div>
-                <h1 class="display-title text-h4 text-md-h3 mt-1">{{ t('appName') }}</h1>
+            <div class="lesson-hero__body">
+                <span class="ribbon">А. Мухтанова · оқу құралы</span>
+                <h1 class="display-title text-h4 text-md-h3 mt-2">{{ t('appName') }}</h1>
                 <div class="text-subtitle-1 mt-1" style="opacity: 0.9">{{ t('appSubtitle') }}</div>
 
                 <div class="d-flex flex-wrap align-center ga-4 mt-4">
@@ -133,14 +132,12 @@ onMounted(load);
 
         <v-row v-else>
             <v-col v-for="section in sections" :key="section.id" cols="12" md="6">
-                <v-card class="section-card h-100" :to="{ name: 'section', params: { id: section.id } }">
-                    <div class="section-card__stripe" :style="{ background: section.accent }" />
+                <RouterLink :to="{ name: 'section', params: { id: section.id } }" class="text-decoration-none">
+                <div :class="['section-card', 'h-100', `poster--${TONES[(section.number - 1) % TONES.length]}`]">
                     <v-img v-if="section.cover" :src="section.cover" height="150" cover />
-                    <v-card-text>
+                    <div class="pa-5">
                         <div class="d-flex align-center ga-2 mb-1">
-                            <v-chip size="x-small" variant="flat" :style="{ background: section.accent, color: '#fff' }">
-                                {{ section.roman }}
-                            </v-chip>
+                            <span class="poster__badge" style="position: static; border-width: 2px">{{ section.roman }} бөлім</span>
                             <span class="text-caption text-medium-emphasis">{{ section.lessons_range }}-сабақтар</span>
                         </div>
                         <h3 class="text-h6 font-weight-bold mb-2">{{ section.title }}</h3>
@@ -150,16 +147,17 @@ onMounted(load);
                         <div v-if="auth.isAuthenticated" class="d-flex align-center ga-2 mt-3">
                             <v-progress-linear
                                 :model-value="percent(section.lessons.filter((l) => l.progress?.status === 'completed').length, section.lessons.length)"
-                                :color="section.accent"
-                                height="6"
+                                color="success"
+                                height="8"
                                 rounded
                             />
                             <span class="text-caption text-medium-emphasis text-no-wrap">
                                 {{ section.lessons.filter((l) => l.progress?.status === 'completed').length }}/{{ section.lessons.length }}
                             </span>
                         </div>
-                    </v-card-text>
-                </v-card>
+                    </div>
+                </div>
+                </RouterLink>
             </v-col>
         </v-row>
     </div>

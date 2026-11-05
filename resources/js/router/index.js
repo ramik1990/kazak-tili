@@ -14,7 +14,6 @@ const routes = [
     { path: '/settings', name: 'settings', component: () => import('@/pages/SettingsPage.vue') },
 
     { path: '/teacher/review', name: 'review', component: () => import('@/pages/teacher/ReviewPage.vue'), meta: { teacher: true } },
-    { path: '/teacher/journal', name: 'journal', component: () => import('@/pages/teacher/JournalPage.vue'), meta: { teacher: true } },
 
     { path: '/admin/tasks', name: 'admin.tasks', component: () => import('@/pages/admin/AdminTasksPage.vue'), meta: { admin: true } },
     { path: '/admin/users', name: 'admin.users', component: () => import('@/pages/admin/AdminUsersPage.vue'), meta: { admin: true } },

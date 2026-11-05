@@ -7,6 +7,7 @@ import { useUiStore } from '@/stores/ui';
 import { useI18n } from '@/composables/useI18n';
 import { countWords, splitBlanks } from '@/utils/format';
 import SkillBadge from '@/components/SkillBadge.vue';
+import { iconOf, toneOf } from '@/utils/skills';
 
 const props = defineProps({
     task: { type: Object, required: true },
@@ -46,11 +47,11 @@ const checked = computed(() => answer.value?.status === 'checked');
 const submitted = computed(() => answer.value?.status === 'submitted');
 const waiting = computed(() => submitted.value && answer.value?.score === null);
 
-const cardClass = computed(() => {
-    if (!answer.value) return '';
-    if (waiting.value) return 'task-card--waiting';
-    if (answer.value.score === null) return '';
-    return answer.value.score === answer.value.max_score ? 'task-card--correct' : 'task-card--wrong';
+const tone = computed(() => toneOf(props.task.skill));
+
+const verdictTone = computed(() => {
+    if (!answer.value || answer.value.score === null) return null;
+    return answer.value.score === answer.value.max_score ? 'green' : 'red';
 });
 
 const scoreLabel = computed(() => {
@@ -108,11 +109,13 @@ function markDone() {
 </script>
 
 <template>
-    <v-card :class="['task-card', 'mb-5', cardClass]">
-        <div class="d-flex flex-wrap align-center ga-2 px-5 pt-4">
-            <v-chip size="small" variant="tonal" color="primary" class="font-weight-bold">
-                {{ task.number }}-тапсырма
-            </v-chip>
+    <section :class="['poster', `poster--${verdictTone || tone}`]">
+        <span class="poster__badge">
+            <span class="emoji">{{ iconOf(task.skill) }}</span>
+            {{ task.number }}-тапсырма
+        </span>
+
+        <div class="d-flex flex-wrap align-center ga-2 mb-3">
             <SkillBadge :skill="task.skill" />
             <v-spacer />
             <v-chip v-if="scoreLabel" size="small" :color="answer.score === answer.max_score ? 'success' : 'warning'" variant="flat">
@@ -123,7 +126,7 @@ function markDone() {
             </v-chip>
         </div>
 
-        <v-card-text class="pt-3">
+        <div>
             <p class="text-body-1 font-weight-medium mb-1">{{ task.prompt }}</p>
             <p v-if="task.instruction" class="text-caption text-medium-emphasis mb-3">{{ task.instruction }}</p>
 
@@ -264,14 +267,14 @@ function markDone() {
                     <span class="font-weight-bold">{{ t('task.answerKey') }}:</span> {{ keyData?.text || '—' }}
                 </v-alert>
             </v-expand-transition>
-        </v-card-text>
+        </div>
 
-        <v-card-actions v-if="locked" class="px-5 pb-4 pt-0 no-print">
+        <div v-if="locked" class="d-flex align-center mt-4 no-print">
             <v-icon icon="mdi-lock-outline" size="16" class="text-medium-emphasis mr-1" />
             <RouterLink :to="{ name: 'login' }" class="text-caption">{{ t('task.signInToAnswer') }}</RouterLink>
-        </v-card-actions>
+        </div>
 
-        <v-card-actions v-else-if="!readonly" class="px-5 pb-4 pt-0 no-print">
+        <div v-else-if="!readonly" class="d-flex flex-wrap align-center ga-2 mt-4 no-print">
             <v-btn
                 v-if="task.type === 'offline'"
                 :color="state.done ? 'success' : 'primary'"
@@ -298,6 +301,6 @@ function markDone() {
             >
                 {{ t('task.showKey') }}
             </v-btn>
-        </v-card-actions>
-    </v-card>
+        </div>
+    </section>
 </template>

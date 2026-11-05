@@ -395,6 +395,7 @@ class TextbookParser
                     $this->lesson['methods'] = array_values(array_filter(array_map('trim', explode(',', rtrim($value, '.')))));
                 } elseif ($field === 'outcomes') {
                     $this->lesson['outcomes'] = $value === '' ? [] : [$value];
+                    $this->lesson['_collect'] = 'outcomes';
                     $this->task = null;
 
                     return true;
@@ -543,10 +544,14 @@ class TextbookParser
             }
         }
 
-        if ($this->lesson !== null && $this->lesson['outcomes'] !== [] && $this->isOutcomeLine($text)) {
-            $this->lesson['outcomes'][] = $text;
+        if (($this->lesson['_collect'] ?? null) === 'outcomes') {
+            if ($this->isOutcomeLine($text)) {
+                $this->lesson['outcomes'][] = $text;
 
-            return;
+                return;
+            }
+
+            unset($this->lesson['_collect']);
         }
 
         $this->pushBlock([
@@ -558,11 +563,9 @@ class TextbookParser
     private function isOutcomeLine(string $text): bool
     {
         return (bool) preg_match('/[;\.]$/u', $text)
-            && mb_strlen($text) < 140
+            && mb_strlen($text) < 160
             && ! preg_match('/^[«"]/u', $text)
-            && count($this->lesson['outcomes']) < 10
-            && $this->lesson['blocks'] === []
-            && $this->lesson['tasks'] === [];
+            && count($this->lesson['outcomes']) < 12;
     }
 
     private function isHeading(string $text, string $style): bool
@@ -868,6 +871,8 @@ class TextbookParser
         }
 
         $answers = $this->lesson['test_answers'] ?? [];
+        unset($this->lesson['_collect']);
+
         $this->lesson['tasks'] = array_map(
             fn ($t) => $this->applyTestAnswers($this->finishTask($t, $this->lesson['answer_keys']), $answers),
             $this->lesson['tasks'],

@@ -6,13 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AnswerResource;
 use App\Models\Answer;
 use App\Models\Group;
-use App\Models\Lesson;
-use App\Models\User;
 use App\Services\Progress;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Validation\Rule;
 
 class ReviewController extends Controller
 {
@@ -67,34 +64,5 @@ class ReviewController extends Controller
             ->get();
 
         return response()->json(['data' => $groups]);
-    }
-
-    public function journal(Request $request): JsonResponse
-    {
-        $data = $request->validate([
-            'group_id' => ['required', Rule::exists('groups', 'id')],
-        ]);
-
-        $students = User::where('group_id', $data['group_id'])
-            ->where('role', User::ROLE_STUDENT)
-            ->with('progress')
-            ->orderBy('name')
-            ->get(['id', 'name', 'group_id']);
-
-        $lessons = Lesson::orderBy('number')->get(['id', 'number', 'title']);
-
-        $rows = $students->map(fn (User $student) => [
-            'id' => $student->id,
-            'name' => $student->name,
-            'lessons' => $student->progress->mapWithKeys(fn ($p) => [$p->lesson_id => [
-                'status' => $p->status,
-                'done_tasks' => $p->done_tasks,
-                'total_tasks' => $p->total_tasks,
-                'score' => $p->score,
-                'max_score' => $p->max_score,
-            ]]),
-        ]);
-
-        return response()->json(['data' => ['lessons' => $lessons, 'students' => $rows]]);
     }
 }

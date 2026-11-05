@@ -26,7 +26,6 @@ export const teacherApi = {
     answers: (params) => http.get('/teacher/answers', { params }),
     check: (id, payload) => http.put(`/teacher/answers/${id}`, payload),
     groups: () => http.get('/teacher/groups'),
-    journal: (groupId) => http.get('/teacher/journal', { params: { group_id: groupId } }),
 };
 
 export const adminApi = {

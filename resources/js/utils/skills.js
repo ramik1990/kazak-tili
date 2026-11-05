@@ -1,20 +1,18 @@
 export const SKILLS = {
-    reading: { icon: '📖', color: '#1B5E4A', soft: '#E4F0E9' },
-    listening: { icon: '🎧', color: '#196A79', soft: '#E1F1F4' },
-    speaking: { icon: '🗣️', color: '#8A4B9B', soft: '#F2E8F6' },
-    writing: { icon: '✍️', color: '#8F5311', soft: '#FBEFE0' },
-    literature: { icon: '📚', color: '#9B4B4B', soft: '#F7E8E8' },
-    project: { icon: '🌿', color: '#3F6322', soft: '#EBF3E2' },
+    reading: { icon: '📖', tone: 'blue' },
+    listening: { icon: '🎧', tone: 'violet' },
+    speaking: { icon: '🗣️', tone: 'pink' },
+    writing: { icon: '✍️', tone: 'amber' },
+    literature: { icon: '📚', tone: 'red' },
+    project: { icon: '🌿', tone: 'green' },
 };
 
-export const TASK_TYPES = {
-    test: { icon: 'mdi-format-list-checks', auto: true },
-    mcq: { icon: 'mdi-radiobox-marked', auto: true },
-    true_false: { icon: 'mdi-check-circle-outline', auto: true },
-    fill_blank: { icon: 'mdi-form-textbox', auto: true },
-    matching: { icon: 'mdi-arrow-left-right', auto: false },
-    sorting: { icon: 'mdi-sort-variant', auto: false },
-    short_text: { icon: 'mdi-text-box-outline', auto: false },
-    essay: { icon: 'mdi-notebook-edit-outline', auto: false },
-    offline: { icon: 'mdi-account-voice', auto: false },
-};
+export const TONES = ['green', 'blue', 'amber', 'violet', 'pink'];
+
+export function toneOf(skill) {
+    return SKILLS[skill]?.tone ?? 'blue';
+}
+
+export function iconOf(skill) {
+    return SKILLS[skill]?.icon ?? '📖';
+}

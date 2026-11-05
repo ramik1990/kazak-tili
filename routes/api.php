@@ -38,7 +38,6 @@ Route::prefix('v1')->group(function () {
         Route::get('answers', [ReviewController::class, 'index']);
         Route::put('answers/{answer}', [ReviewController::class, 'update'])->whereNumber('answer');
         Route::get('groups', [ReviewController::class, 'groups']);
-        Route::get('journal', [ReviewController::class, 'journal']);
     });
 
     Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->group(function () {

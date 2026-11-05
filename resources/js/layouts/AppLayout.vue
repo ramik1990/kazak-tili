@@ -24,7 +24,6 @@ const links = computed(() => {
     if (auth.isTeacher) {
         items.push(
             { to: { name: 'review' }, title: t('nav.review'), icon: 'mdi-check-decagram-outline' },
-            { to: { name: 'journal' }, title: t('nav.journal'), icon: 'mdi-table-account' },
         );
     }
 
